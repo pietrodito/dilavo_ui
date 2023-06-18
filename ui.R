@@ -1,4 +1,3 @@
-
 sidebar_setup <- tribble(
  ~ label,            ~ var,         ~ icon_name,
  "Scores",           "vue",         "dashboard",
