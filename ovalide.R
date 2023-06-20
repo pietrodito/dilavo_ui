@@ -41,8 +41,9 @@ grab_all_names_from_files <- function() {
 
 nom_complet_tableau <- "Tableau [1.D.2.MS]"
 nom_complet_tableau <- "Tableau [1.D.2.POSTCOV]"
-fichiers_correspondant <- function(nom_complet_tableau) {
+fichiers_correspondants <- function(nom_complet_tableau) {
 
+ print(nom_complet_tableau)
  nom_fichier_correspondant <- function() {
 
   simplifie_nom_complet_tableau <- function(nom_complet_tableau) {
@@ -57,8 +58,9 @@ fichiers_correspondant <- function(nom_complet_tableau) {
   (nom_simple <- simplifie_nom_complet_tableau(nom_complet_tableau))
   matches <- names %>% keep(function(name) {str_detect(nom_simple, name)})
   if(length(matches) != 1) {
-   stop(paste("Il existe un et unique type de fichier pour ce tableau"),
-        matches)
+   print(matches)
+   stop(paste("Il n'existe pas un et unique type de fichier pour ce tableau"))
+
   }
   matches
  }
@@ -70,5 +72,5 @@ fichiers_correspondant <- function(nom_complet_tableau) {
  )
 }
 
-fichiers_correspondant(nom_complet_tableau)
+fichiers_correspondants(nom_complet_tableau)
 

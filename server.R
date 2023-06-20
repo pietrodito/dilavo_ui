@@ -6,16 +6,37 @@ js_black_header_callback <- paste(
                          {'background-color': '#ccc', 'color': '#000'});",
     "}")
 
-server <- function(input, output, session) {
+load_score_data <-  function() {
 
- score_data <- NULL
- if(file.exists("data/scores.csv")) {
+ enhanced_colnames <- function(score_data) {
+  (
+   score_data
+   %>% colnames()
+   %>% str_remove_all("^Score.*'")
+   %>% str_remove_all("[\\(|\\)|:|\\\"]")
+   %>% str_trim()
+   %>% str_replace("score ","score\n")
+  )
+ }
+
+ file_path <- "data/scores.csv"
+ if( ! file.exists(file_path)) {
+  return(NULL)
+ } else {
   (
    "data/scores.csv"
    %>% read_csv()
-   %>% select(- Region)
+   %>% select(-c(1, 23))
   ) -> score_data
+
+  names(score_data) <- enhanced_colnames(score_data)
+  return(score_data)
  }
+}
+
+server <- function(input, output, session) {
+
+ score_data <- load_score_data()
 
  file_ovalide <- reactive({
   req(input$fi_ovalide)
@@ -37,7 +58,6 @@ server <- function(input, output, session) {
   file.remove(f)
   session$reload()
  })
-
 
  output$scores <- if(! is.null(score_data)) {
                   renderDT(score_data,
