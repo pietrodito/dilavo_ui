@@ -36,6 +36,18 @@ load_score_data <-  function() {
 
 server <- function(input, output, session) {
 
+ proper_text_from_subitem <- function(selected_subitem) {
+  tokens <- str_split(selected_subitem, "_") %>% unlist
+  section <- subItems_pattern[subItems_pattern$tabName == tokens[1], "text"]
+  champ <- str_to_upper(tokens[2])
+  statut <- str_to_upper(tokens[3])
+  str_c(champ, statut, section, sep = " ")
+ }
+
+
+ output$header_context <- renderText({
+        proper_text_from_subitem(input$selected_subitem)})
+
  score_data <- load_score_data()
 
  file_ovalide <- reactive({
@@ -59,17 +71,16 @@ server <- function(input, output, session) {
   session$reload()
  })
 
- output$scores <- if(! is.null(score_data)) {
-                  renderDT(score_data,
-                           rownames = FALSE,
-                           selection = list(mode = "single", target = "cell"),
-                           options = list(
-                           columnDefs = list(
-                            list(className = 'dt-center',
-                                 targets = 0:(ncol(score_data) - 1))),
-                            dom = 't',
-                            pageLength = nrow(score_data),
-                            initComplete = JS(js_black_header_callback )))
+ output$scores_mco_dgf <- if(! is.null(score_data)) {
+  renderDT(score_data,
+           rownames = FALSE,
+           selection = list(mode = "single", target = "cell"),
+           options = list(columnDefs = list(
+            list(className = 'dt-center',
+                 targets = 0:(ncol(score_data) - 1))),
+            dom = 't',
+            pageLength = nrow(score_data),
+            initComplete = JS(js_black_header_callback )))
  } else {
   renderDT(tibble(`Pour commencer...` =
                    "Veuillez téléverser un fichier avec les scores"),
