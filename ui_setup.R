@@ -10,10 +10,10 @@ items_setup <- tribble(
   "PSY",  "OQN" ,  "face-sad-tear"        )
 
 subItems_pattern <- tribble(
-            ~ text,        ~ tabName, ~ icon_name,
-   "Récap. Scores",          "dash", "dashboard",
-      "MàJ Scores",    "maj_scores",  "file-pen",
-    "MàJ Tableaux",      "maj_tabs",  "file-csv",
-    "MàJ contacts",   "maj_contact",        "at",
-"Score → Tableaux",   "map_scr_tab",      "link",
- "Supprime Données",        "reset",     "trash")
+             ~text,     ~tabName,  ~icon_name,
+   "Récap. Scores",       "dash", "dashboard",
+      "MàJ Scores",  "MAJscores",  "file-pen",
+    "MàJ Tableaux",    "MAJtabs",  "file-csv",
+    "MàJ contacts", "MAJcontact",        "at",
+"Score → Tableaux",  "MAPscrTAB",      "link",
+"Supprime Données",      "reset",     "trash")
