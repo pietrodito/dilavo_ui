@@ -36,11 +36,6 @@ load_score_data <-  function(champ, statut) {
 
 server <- function(input, output, session) {
 
- ## TODO eval(parse) not gonna work inside function
- ## Use same technique as ui_body
- ## 1) define all needed variables
- ## 2) then assign with inherits = TRUE
-
  champ <- "mco"
  statut <- "dgf"
  suffixe <- str_c("_", champ, "_", statut)

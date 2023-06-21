@@ -1,8 +1,8 @@
-library(DT)
 library(tidyverse)
+library(R6)
 library(shiny)
 library(shinydashboard)
-library(purrr)
+library(DT)
 
 
 ## UI -------------------------
