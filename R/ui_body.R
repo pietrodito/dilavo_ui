@@ -1,74 +1,45 @@
-champ <- "mco"
-statut <- "dgf"
-
 prepare_list_tabItems <- function(champ, statut) {
 
- ## SETUP DATA ----------------------------------------
- CHAMP  <- str_to_upper(champ)
- STATUT <- str_to_upper(statut)
- suffixe <- str_c("_", champ, "_", statut)
+ subItems_pattern <- tribble(
+  ~text             , ~icon_name,  ~tabName      , ~tabItemClass, ~init_params,
+  "Récap. Scores"   , "dashboard", "dash"        , "Dash"       , NA          ,
+  "MàJ Scores"      , "file-pen" , "MAJscores"   , "Upload"     , NA          ,
+  "MàJ Tableaux"    , "file-csv" , "MAJtabs"     , "Upload"     , NA          ,
+  "MàJ contacts"    , "at"       , "MAJcontact"  , "Upload"     , NA          ,
+  "Score → Tableaux", "link"     , "MAPscore"    , "MapScore"   , NA          ,
+  "Supprime Données", "trash"    , "reset"       , "Reset"      , NA          )
 
- upload_tab_items_setup_pattern <- tribble(
-  ~tabName    ,   ~var         ,   ~label                           ,
-  "MAJscores" ,   "fi_scores"  ,   "Téléversez les scores"          ,
-  "MAJtabs"   ,   "fi_ovalide" ,   "Téléversez les tableaux OVALIDE",
-  "MAJcontact",   "fi_contacts",   "Téléversez les contacts")
+ upload_tab_items_init_parameters <- tribble(
+  ~tabName ,     ~label                           ,
+  "MAJscores" ,  "Téléversez les scores"          ,
+  "MAJtabs"   ,  "Téléversez les tableaux OVALIDE",
+  "MAJcontact",  "Téléversez les contacts"        )
 
- add_suffixe_to_pattern <- function() {
-  (
-   upload_tab_items_setup_pattern
-   %>% mutate(across(all_of(c("tabName", "var")), ~ str_c(., suffixe)))
-  )
+ ((
+  upload_tab_items_init_parameters
+  %>% nest(.by = tabName, .key = "init_params")
+  %>% right_join(subItems_pattern, by = "tabName", suffix = c("", ".y"))
+  %>% select(- init_params.y)
+ ) -> subItems_pattern)
+
+ flatten_not_NULL <- function(lst) if(is.null(lst)) NULL else flatten(lst)
+
+ create_tabItem <- function(text,
+                            icon_name,
+                            tabName,
+                            tabItemClass,
+                            init_params) {
+  Builder <- TabItemBuilder$subClass(tabItemClass)
+  args <- c(list(champ = champ, statut = statut, tabName = tabName,
+                 init_params %>% flatten_not_NULL)) %>% flatten()
+  builder <- do.call(Builder$new, args)
+  builder$produce_tabItem()
  }
 
- (upload_tab_items_setup <- add_suffixe_to_pattern())
-
- (upload_tab_items_setup_for_upload_funs <-
-  bind_cols(upload_tab_items_setup_pattern[, "tabName"],
-            upload_tab_items_setup[, c("var", "label")]))
-
- ## BODY NAMES NEEDED declared as empty
- (body_names <- str_c("body_", subItems_pattern$tabName))
- for(name in body_names) {
-  eval(parse(text = (str_c("assign(\"", name, "\", NULL)"))))
- }
-
- ## BODY FUNCTIONS: dash ---------------------------------
- body_dash <-  DTOutput(str_c("scores", suffixe))
-
- ## BODY FUNCTIONS: uploads ---------------------------------
- file_input_helper <- function(var, label) {
-  fileInput(var, label,
-            buttonLabel = "Parcourir...",
-            placeholder = "Aucun fichier séléctionné"
-            )
- }
-
- create_body <- function(tabName, var, label) {
-  (body_upload_name <- str_c("body_", tabName))
-  eval(parse(text = (str_c(
-   "assign(body_upload_name,
-           file_input_helper(\"", var, "\", \"", label, "\"),
-          inherits = TRUE)"))))
- }
-
- pwalk(upload_tab_items_setup_for_upload_funs, create_body)
-
- ## BODY FUNCTIONS: dash ---------------------------------
- body_reset <-  actionButton(str_c("reset_action", suffixe),
-                             str_c("Reset", CHAMP, STATUT, sep = " "))
-
- ## RETURN ALL TABITEMS
- make_tabItem <- function(tabName, body_name) {
-  tabItem(str_c(tabName, suffixe), get(body_name))
- }
-
- (
-  tibble(body_name = body_names)
-  %>% bind_cols(subItems_pattern %>% select(tabName))
-  %>% pmap(make_tabItem)
- )
+ pmap(subItems_pattern, create_tabItem)
 }
+
+prepare_list_tabItems("mco", "oqn")
 
 make_body <- function() {
  ((

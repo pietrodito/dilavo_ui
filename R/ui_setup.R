@@ -15,5 +15,5 @@ subItems_pattern <- tribble(
       "MàJ Scores",  "MAJscores",  "file-pen",
     "MàJ Tableaux",    "MAJtabs",  "file-csv",
     "MàJ contacts", "MAJcontact",        "at",
-"Score → Tableaux",  "MAPscrTAB",      "link",
+"Score → Tableaux",   "MAPscore",      "link",
 "Supprime Données",      "reset",     "trash")
