@@ -1,8 +1,10 @@
 library(tidyverse)
+library(magrittr)
 library(R6)
 library(shiny)
 library(shinydashboard)
 library(DT)
+
 
 
 ## UI -------------------------

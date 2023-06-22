@@ -24,9 +24,11 @@ upload_tab_items_init_parameters <- tribble(
  "MAJtabs"   ,  "Téléversez les tableaux OVALIDE",
  "MAJcontact",  "Téléversez les contacts"        )
 
+(subItems_pattern %<>% mutate(preserve_order = 1:nrow(subItems_pattern)))
 ((
  upload_tab_items_init_parameters
  %>% nest(.by = tabName, .key = "init_params")
  %>% right_join(subItems_pattern, by = "tabName", suffix = c("", ".y"))
- %>% select(- init_params.y)
+ %>% arrange(preserve_order)
+ %>% select(- c("init_params.y", "preserve_order"))
 ) -> subItems_pattern)

@@ -17,7 +17,6 @@ prepare_list_tabItems <- function(champ, statut) {
  pmap(subItems_pattern, create_tabItem)
 }
 
-prepare_list_tabItems("mco", "oqn")
 
 make_body <- function() {
  ((

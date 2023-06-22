@@ -1,7 +1,11 @@
 make_subItem <- function(champ,  statut) {
  champ  <- str_to_lower(champ)
  statut <- str_to_lower(statut)
- mutate(subItems_pattern, tabName = str_c(tabName, "_", champ, "_", statut))
+ (
+  subItems_pattern
+  %>% mutate(tabName = str_c(tabName, "_", champ, "_", statut))
+  %>% select(text, tabName, icon_name)
+ )
 }
 
 make_menuSubItem <- function(text, tabName, icon_name) {
