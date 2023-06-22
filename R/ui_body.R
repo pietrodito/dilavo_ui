@@ -1,6 +1,9 @@
 prepare_list_tabItems <- function(champ, statut) {
 
- flatten_not_NULL <- function(lst) if(is.null(lst)) NULL else flatten(lst)
+ nullify <- function(fn) function(...) {
+  args <- list(...)
+  if(is.null(args[[1]])) NULL else fn(...)
+ }
 
  create_tabItem <- function(text,
                             icon_name,
@@ -8,13 +11,13 @@ prepare_list_tabItems <- function(champ, statut) {
                             tabItemClass,
                             init_params) {
   Builder <- TabItemBuilder$subClass(tabItemClass)
-  args <- c(list(champ = champ, statut = statut, tabName = tabName,
-                 init_params %>% flatten_not_NULL)) %>% flatten()
+  args <- c(list(champ = champ, statut = statut, tabName = tabName),
+            init_params %>% (nullify(flatten)))
   builder <- do.call(Builder$new, args)
   builder$produce_tabItem()
  }
 
- pmap(subItems_pattern, create_tabItem)
+ pmap(subItems_setup, create_tabItem)
 }
 
 

@@ -8,6 +8,7 @@ library(DT)
 
 
 ## UI -------------------------
+source("R/TabItemBuilder.R")
 source("R/ui_setup.R")
 source("R/ui_dashboardHeader.R")
 source("R/ui_sidebar.R")

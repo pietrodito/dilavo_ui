@@ -52,7 +52,7 @@ server <- function(input, output, session) {
 
  proper_text_from_subitem <- function(selected_subitem) {
   tokens <- str_split(selected_subitem, "_") %>% unlist
-  section <- subItems_pattern[subItems_pattern$tabName == tokens[1], "text"]
+  section <- subItems_setup[subItems_setup$tabName == tokens[1], "text"]
   champ <- str_to_upper(tokens[2])
   statut <- str_to_upper(tokens[3])
   str_c(champ, statut, section, sep = " ")

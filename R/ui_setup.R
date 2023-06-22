@@ -9,7 +9,7 @@ items_setup <- tribble(
   "PSY",  "DGF" ,  "face-sad-tear"        ,
   "PSY",  "OQN" ,  "face-sad-tear"        )
 
-subItems_pattern <- tribble(
+subItems_setup <- tribble(
  ~text             , ~icon_name,  ~tabName      , ~tabItemClass, ~init_params,
  "Récap. Scores"   , "dashboard", "dash"        , "Dash"       , NA          ,
  "MàJ Scores"      , "file-pen" , "MAJscores"   , "Upload"     , NA          ,
@@ -24,11 +24,11 @@ upload_tab_items_init_parameters <- tribble(
  "MAJtabs"   ,  "Téléversez les tableaux OVALIDE",
  "MAJcontact",  "Téléversez les contacts"        )
 
-(subItems_pattern %<>% mutate(preserve_order = 1:nrow(subItems_pattern)))
+(subItems_setup %<>% mutate(preserve_order = 1:nrow(subItems_setup)))
 ((
  upload_tab_items_init_parameters
  %>% nest(.by = tabName, .key = "init_params")
- %>% right_join(subItems_pattern, by = "tabName", suffix = c("", ".y"))
+ %>% right_join(subItems_setup, by = "tabName", suffix = c("", ".y"))
  %>% arrange(preserve_order)
  %>% select(- c("init_params.y", "preserve_order"))
-) -> subItems_pattern)
+) -> subItems_setup)
