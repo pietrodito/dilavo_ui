@@ -1,27 +1,5 @@
 prepare_list_tabItems <- function(champ, statut) {
 
- subItems_pattern <- tribble(
-  ~text             , ~icon_name,  ~tabName      , ~tabItemClass, ~init_params,
-  "Récap. Scores"   , "dashboard", "dash"        , "Dash"       , NA          ,
-  "MàJ Scores"      , "file-pen" , "MAJscores"   , "Upload"     , NA          ,
-  "MàJ Tableaux"    , "file-csv" , "MAJtabs"     , "Upload"     , NA          ,
-  "MàJ contacts"    , "at"       , "MAJcontact"  , "Upload"     , NA          ,
-  "Score → Tableaux", "link"     , "MAPscore"    , "MapScore"   , NA          ,
-  "Supprime Données", "trash"    , "reset"       , "Reset"      , NA          )
-
- upload_tab_items_init_parameters <- tribble(
-  ~tabName ,     ~label                           ,
-  "MAJscores" ,  "Téléversez les scores"          ,
-  "MAJtabs"   ,  "Téléversez les tableaux OVALIDE",
-  "MAJcontact",  "Téléversez les contacts"        )
-
- ((
-  upload_tab_items_init_parameters
-  %>% nest(.by = tabName, .key = "init_params")
-  %>% right_join(subItems_pattern, by = "tabName", suffix = c("", ".y"))
-  %>% select(- init_params.y)
- ) -> subItems_pattern)
-
  flatten_not_NULL <- function(lst) if(is.null(lst)) NULL else flatten(lst)
 
  create_tabItem <- function(text,
