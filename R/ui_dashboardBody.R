@@ -1,4 +1,4 @@
-prepare_list_tabItems <- function(champ, statut) {
+prepare_list_tabItems <- function(CHAMP, STATUT) {
 
  nullify <- function(fn) function(...) {
   args <- list(...)
@@ -11,7 +11,7 @@ prepare_list_tabItems <- function(champ, statut) {
                             tabItemClass,
                             init_params) {
   Builder <- TabItemBuilder$subClass(tabItemClass)
-  args <- c(list(champ = champ, statut = statut, tabName = tabName),
+  args <- c(list(champ = CHAMP, statut = STATUT, tabName = tabName),
             init_params %>% (nullify(flatten)))
   builder <- do.call(Builder$new, args)
   builder$produce_tabItem()
@@ -24,7 +24,7 @@ prepare_list_tabItems <- function(champ, statut) {
 make_body <- function() {
  ((
   items_setup
-  %>% select(champ, statut)
+  %>% select(CHAMP, STATUT)
   %>% mutate(across(everything(), str_to_lower))
  ) -> tous_les_items)
 

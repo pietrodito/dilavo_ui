@@ -1,6 +1,6 @@
-make_subItem <- function(champ,  statut) {
- champ  <- str_to_lower(champ)
- statut <- str_to_lower(statut)
+make_subItem <- function(CHAMP,  STATUT) {
+ champ  <- str_to_lower(CHAMP)
+ statut <- str_to_lower(STATUT)
  (
   subItems_setup
   %>% mutate(tabName = str_c(tabName, "_", champ, "_", statut))
@@ -12,11 +12,13 @@ make_menuSubItem <- function(text, tabName, icon_name) {
  menuSubItem(text, tabName, icon = icon(icon_name))
 }
 
-make_menuItem <- function(champ, statut, icon_name) {
- text <- str_c(champ, statut, sep = " ")
- tabName <- str_c(str_to_lower(champ), str_to_lower(statut), sep = "_")
+make_menuItem <- function(CHAMP, STATUT, icon_name) {
+ champ  <- str_to_lower(CHAMP)
+ statut <- str_to_lower(STATUT)
+ text <- str_c(CHAMP, " ", STATUT)
+ tabName <- str_c(CHAMP, "_", STATUT)
  icon <- icon(icon_name, class = "fas")
- lst_subItems <- pmap(make_subItem(champ, statut), make_menuSubItem)
+ lst_subItems <- pmap(make_subItem(CHAMP, STATUT), make_menuSubItem)
  all_args <- list(text = text, tabName = tabName, icon = icon, lst_subItems)
  do.call(menuItem, all_args)
 }

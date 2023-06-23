@@ -1,5 +1,5 @@
 items_setup <- tribble(
- ~champ, ~statut, ~icon_name              ,
+ ~CHAMP, ~STATUT, ~icon_name              ,
   "MCO",  "DGF" ,  "bed-pulse"            ,
   "MCO",  "OQN" ,  "bed-pulse"            ,
   "HAD",  "DGF" ,  "house-chimney-medical",
