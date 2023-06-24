@@ -1,40 +1,53 @@
-prepare_list_tabItems <- function(CHAMP, STATUT) {
+items_setup <- tribble(
+ ~CHAMP, ~STATUT, ~icon_name              ,
+  "MCO",  "DGF" ,  "bed-pulse"            ,
+  "MCO",  "OQN" ,  "bed-pulse"            ,
+  "HAD",  "DGF" ,  "house-chimney-medical",
+  "HAD",  "OQN" ,  "house-chimney-medical",
+  "SMR",  "DGF" ,  "hospital"             ,
+  "SMR",  "OQN" ,  "hospital"             ,
+  "PSY",  "DGF" ,  "face-sad-tear"        ,
+  "PSY",  "OQN" ,  "face-sad-tear"        )
 
- nullify <- function(fn) function(...) {
-  args <- list(...)
-  if(is.null(args[[1]])) NULL else fn(...)
+subItems_setup <- tribble(
+ ~text             , ~icon_name , ~tabName    , ~tabItemClass, ~init_params,
+ "Récap. Scores"   , "dashboard", "dash"      , "Dash"       , NA          ,
+ "MàJ Scores"      , "file-pen" , "MAJscores" , "Upload"     , NA          ,
+ "MàJ Tableaux"    , "file-csv" , "MAJtabs"   , "Upload"     , NA          ,
+ "MàJ contacts"    , "at"       , "MAJcontact", "Upload"     , NA          ,
+ "Score → Tableaux", "link"     , "MAPscore"  , "MapScore"   , NA          ,
+ "Supprime Données", "trash"    , "reset"     , "Reset"      , NA          )
+
+upload_tab_items_init_parameters <- tribble(
+ ~tabName ,     ~label                           ,
+ "MAJscores" ,  "Téléversez les scores"          ,
+ "MAJtabs"   ,  "Téléversez les tableaux OVALIDE",
+ "MAJcontact",  "Téléversez les contacts"        )
+
+(subItems_setup %<>% mutate(preserve_order = 1:nrow(subItems_setup)))
+((
+ upload_tab_items_init_parameters
+ %>% nest(.by = tabName, .key = "init_params")
+ %>% right_join(subItems_setup, by = "tabName", suffix = c("", ".y"))
+ %>% arrange(preserve_order)
+ %>% select(- c("init_params.y", "preserve_order"))
+) -> subItems_setup)
+
+produce_dash_subItems <- function() {
+
+ produce_dash_item <- function(CHAMP, STATUT) {
+  champ   <- str_to_lower(CHAMP)
+  statut  <- str_to_lower(STATUT)
+  tabName <- str_c("dash_", champ, "_", statut)
+  tabItem(tabName, DTOutput(tabName))
  }
 
- create_tabItem <- function(text,
-                            icon_name,
-                            tabName,
-                            tabItemClass,
-                            init_params) {
-  Builder <- TabItemBuilder$subClass(tabItemClass)
-  args <- c(list(champ = CHAMP, statut = STATUT, tabName = tabName),
-            init_params %>% (nullify(flatten)))
-  builder <- do.call(Builder$new, args)
-  builder$produce_tabItem()
- }
-
- pmap(subItems_setup, create_tabItem)
-}
-
-
-make_body <- function() {
- ((
+ (
   items_setup
   %>% select(CHAMP, STATUT)
-  %>% mutate(across(everything(), str_to_lower))
- ) -> tous_les_items)
-
- dashboardBody(
-  tags$head(tags$link(rel = "stylesheet",
-                      type = "text/css",
-                      href = "custom.css")),
-  (
-   pmap(tous_les_items, prepare_list_tabItems)
-   %>% flatten()
-   %>% do.call(tabItems, .)
-  ))
+  %>% pmap(produce_dash_subItem)
+ )
 }
+
+## TODO keep on with reset and upload items
+produce_dash_subItems()
