@@ -9,6 +9,8 @@ items_setup <- tribble(
   "PSY",  "DGF" ,  "face-sad-tear"        ,
   "PSY",  "OQN" ,  "face-sad-tear"        )
 
+(items_loop <- items_setup %>% select(CHAMP, STATUT))
+
 subItems_setup <- tribble(
  ~text             , ~icon_name , ~tabName    , ~tabItemClass, ~init_params,
  "Récap. Scores"   , "dashboard", "dash"      , "Dash"       , NA          ,
@@ -41,13 +43,24 @@ produce_dash_subItems <- function() {
   tabName <- str_c("dash_", champ, "_", statut)
   tabItem(tabName, DTOutput(tabName))
  }
-
- (
-  items_setup
-  %>% select(CHAMP, STATUT)
-  %>% pmap(produce_dash_subItem)
- )
+ pmap(items_loop, produce_dash_item)
 }
 
-## TODO keep on with reset and upload items
 produce_dash_subItems()
+
+
+produce_reset_subItems <- function() {
+
+ produce_reset_item <- function(CHAMP, STATUT) {
+  champ   <- str_to_lower(CHAMP)
+  statut  <- str_to_lower(STATUT)
+  tabName <- str_c("reset_", champ, "_", statut)
+  tabItem(tabName,  actionButton(tabName,
+                                 str_c("Reset ", CHAMP, " " , STATUT)))
+ }
+ pmap(items_loop, produce_reset_item)
+}
+
+produce_reset_subItems()
+
+## TODO keep on with MAPscore and upload items
