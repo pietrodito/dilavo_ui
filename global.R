@@ -6,6 +6,8 @@ library(shinydashboard)
 library(DT)
 
 
+options(shiny.maxRequestSize=30*1024^2)
+
 
 ## UI -------------------------
 source("R/ui_setup.R")

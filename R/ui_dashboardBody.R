@@ -20,7 +20,6 @@ prepare_list_tabItems <- function(CHAMP, STATUT) {
  pmap(subItems_setup, create_tabItem)
 }
 
-
 make_body <- function() {
  ((
   items_setup

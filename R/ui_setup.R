@@ -1,13 +1,13 @@
 items_setup <- tribble(
- ~CHAMP, ~STATUT, ~icon_name              ,
-  "MCO",  "DGF" ,  "bed-pulse"            ,
-  "MCO",  "OQN" ,  "bed-pulse"            ,
-  "HAD",  "DGF" ,  "house-chimney-medical",
-  "HAD",  "OQN" ,  "house-chimney-medical",
-  "SMR",  "DGF" ,  "hospital"             ,
-  "SMR",  "OQN" ,  "hospital"             ,
-  "PSY",  "DGF" ,  "face-sad-tear"        ,
-  "PSY",  "OQN" ,  "face-sad-tear"        )
+ ~CHAMP, ~STATUT, ~icon_name             ,
+ "MCO" , "DGF"  , "bed-pulse"            ,
+ "MCO" , "OQN"  , "bed-pulse"            ,
+ "HAD" , "DGF"  , "house-chimney-medical",
+ "HAD" , "OQN"  , "house-chimney-medical",
+ "SMR" , "DGF"  , "hospital"             ,
+ "SMR" , "OQN"  , "hospital"             ,
+ "PSY" , "DGF"  , "face-sad-tear"        ,
+ "PSY" , "OQN"  , "face-sad-tear"        )
 
 subItems_setup <- tribble(
  ~text             , ~icon_name,  ~tabName      , ~tabItemClass, ~init_params,
