@@ -12,7 +12,6 @@ options(shiny.maxRequestSize=30*1024^2)
 ## UI -------------------------
 source("R/ui_setup.R")
 source("R/ui_dashboardHeader.R")
-source("R/TabItemBuilder.R")
 source("R/ui_dashboardSidebar.R")
 source("R/ui_dashboardBody.R")
 
