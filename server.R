@@ -12,13 +12,11 @@ server <- function(input, output, session) {
   })
  }
 
- pwalk(items_loop, reset_event)
 
  create_score_data_var <- function(champ, statut) {
   eval(parse(text = str_c("score_data_", champ, "_", statut, "<<- NULL")))
  }
 
- pwalk(items_loop, create_score_data_var)
 
  display_score <- function(champ, statut) {
 
@@ -43,5 +41,13 @@ server <- function(input, output, session) {
    }
   }
 
- pwalk(items_loop, display_score)
+ server_logic <- list(reset_event,
+                      create_score_data_var,
+                      display_score)
+
+ apply_server_logic <- function(champ, statut) {
+  walk(server_logic, ~ do.call(., list(champ, statut)))
+ }
+
+ pwalk(items_loop, apply_server_logic)
 }
