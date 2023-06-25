@@ -1,66 +1,71 @@
-items_setup <- tribble(
- ~CHAMP, ~STATUT, ~icon_name              ,
-  "MCO",  "DGF" ,  "bed-pulse"            ,
-  "MCO",  "OQN" ,  "bed-pulse"            ,
-  "HAD",  "DGF" ,  "house-chimney-medical",
-  "HAD",  "OQN" ,  "house-chimney-medical",
-  "SMR",  "DGF" ,  "hospital"             ,
-  "SMR",  "OQN" ,  "hospital"             ,
-  "PSY",  "DGF" ,  "face-sad-tear"        ,
-  "PSY",  "OQN" ,  "face-sad-tear"        )
+make_body <- function() {
 
-(items_loop <- items_setup %>% select(CHAMP, STATUT))
+ produce_subItems_list <- function() {
 
-subItems_setup <- tribble(
- ~text             , ~icon_name , ~tabName    , ~tabItemClass, ~init_params,
- "Récap. Scores"   , "dashboard", "dash"      , "Dash"       , NA          ,
- "MàJ Scores"      , "file-pen" , "MAJscores" , "Upload"     , NA          ,
- "MàJ Tableaux"    , "file-csv" , "MAJtabs"   , "Upload"     , NA          ,
- "MàJ contacts"    , "at"       , "MAJcontact", "Upload"     , NA          ,
- "Score → Tableaux", "link"     , "MAPscore"  , "MapScore"   , NA          ,
- "Supprime Données", "trash"    , "reset"     , "Reset"      , NA          )
+  produce_dash_subItems <- function() {
 
-upload_tab_items_init_parameters <- tribble(
- ~tabName ,     ~label                           ,
- "MAJscores" ,  "Téléversez les scores"          ,
- "MAJtabs"   ,  "Téléversez les tableaux OVALIDE",
- "MAJcontact",  "Téléversez les contacts"        )
+   produce_item <- function(CHAMP, STATUT) {
+    champ   <- str_to_lower(CHAMP)
+    statut  <- str_to_lower(STATUT)
+    tabName <- str_c("dash_", champ, "_", statut)
+    tabItem(tabName, DTOutput(tabName))
+   }
+   pmap(items_loop, produce_item)
+  }
 
-(subItems_setup %<>% mutate(preserve_order = 1:nrow(subItems_setup)))
-((
- upload_tab_items_init_parameters
- %>% nest(.by = tabName, .key = "init_params")
- %>% right_join(subItems_setup, by = "tabName", suffix = c("", ".y"))
- %>% arrange(preserve_order)
- %>% select(- c("init_params.y", "preserve_order"))
-) -> subItems_setup)
+  produce_reset_subItems <- function() {
 
-produce_dash_subItems <- function() {
+   produce_item <- function(CHAMP, STATUT) {
+    champ   <- str_to_lower(CHAMP)
+    statut  <- str_to_lower(STATUT)
+    tabName <- str_c("reset_", champ, "_", statut)
+    tabItem(tabName,
+            actionButton(tabName, str_c("Reset ", CHAMP, " " , STATUT)))
+   }
+   pmap(items_loop, produce_item)
+  }
 
- produce_dash_item <- function(CHAMP, STATUT) {
-  champ   <- str_to_lower(CHAMP)
-  statut  <- str_to_lower(STATUT)
-  tabName <- str_c("dash_", champ, "_", statut)
-  tabItem(tabName, DTOutput(tabName))
+  produce_MAPscore_subItems <- function() {
+
+   produce_item <- function(CHAMP, STATUT) {
+    champ   <- str_to_lower(CHAMP)
+    statut  <- str_to_lower(STATUT)
+    tabName <- str_c("MAPscore_", champ, "_", statut)
+    tabItem(tabName,
+            actionButton(tabName, NA))
+   }
+   pmap(items_loop, produce_item)
+  }
+
+  produce_upload_subItems <- function(tabName, label) {
+
+   produce_item <- function(CHAMP, STATUT) {
+    champ   <- str_to_lower(CHAMP)
+    statut  <- str_to_lower(STATUT)
+    tabName <- str_c(tabName, "_", champ, "_", statut)
+    tabItem(tabName,
+            fileInput(tabName,
+                      label,
+                      buttonLabel = "Parcourir...",
+                      placeholder = "Aucun fichier séléctionné"))
+   }
+   pmap(items_loop, produce_item)
+  }
+
+  (subItems_list <- c(
+   produce_reset_subItems(),
+   produce_dash_subItems(),
+   produce_MAPscore_subItems(),
+   do.call(c, pmap(upload_tab_items_init_parameters, produce_upload_subItems))
+  ))
  }
- pmap(items_loop, produce_dash_item)
-}
 
-produce_dash_subItems()
-
-
-produce_reset_subItems <- function() {
-
- produce_reset_item <- function(CHAMP, STATUT) {
-  champ   <- str_to_lower(CHAMP)
-  statut  <- str_to_lower(STATUT)
-  tabName <- str_c("reset_", champ, "_", statut)
-  tabItem(tabName,  actionButton(tabName,
-                                 str_c("Reset ", CHAMP, " " , STATUT)))
+ include_custom_css <- function() {
+  tags$head(tags$link(rel = "stylesheet",
+                      type = "text/css",
+                      href = "custom.css"))
  }
- pmap(items_loop, produce_reset_item)
+
+ dashboardBody(include_custom_css(),
+               do.call(tabItems, produce_subItems_list()))
 }
-
-produce_reset_subItems()
-
-## TODO keep on with MAPscore and upload items
