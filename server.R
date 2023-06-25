@@ -1,11 +1,9 @@
 server <- function(input, output, session) {
 
- reset_event <- function(CHAMP, STATUT) {
-  champ  <- str_to_lower(CHAMP)
-  statut <- str_to_lower(STATUT)
+ reset_event <- function(champ, statut) {
 
   input_var <- str_c("reset", champ, statut, sep = "_")
-  data_path <- str_c("data/", CHAMP, "_", STATUT)
+  data_path <- str_c("data/", champ, "_", statut)
 
   observeEvent(input[[input_var]], {
    f <- list.files(data_path, include.dirs = T, full.names = T, recursive = T)
@@ -16,17 +14,13 @@ server <- function(input, output, session) {
 
  pwalk(items_loop, reset_event)
 
- create_score_data_var <- function(CHAMP, STATUT) {
-  champ  <- str_to_lower(CHAMP)
-  statut <- str_to_lower(STATUT)
+ create_score_data_var <- function(champ, statut) {
   eval(parse(text = str_c("score_data_", champ, "_", statut, "<<- NULL")))
  }
 
  pwalk(items_loop, create_score_data_var)
 
- display_score <- function(CHAMP, STATUT) {
-  champ  <- str_to_lower(CHAMP)
-  statut <- str_to_lower(STATUT)
+ display_score <- function(champ, statut) {
 
   output_var <- str_c("dash", champ, statut, sep = "_")
   data_var   <- str_c("score_data", champ, statut, sep = "_")

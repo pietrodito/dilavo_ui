@@ -1,15 +1,15 @@
 items_setup <- tribble(
- ~CHAMP, ~STATUT, ~icon_name             ,
- "MCO" , "DGF"  , "bed-pulse"            ,
- "MCO" , "OQN"  , "bed-pulse"            ,
- "HAD" , "DGF"  , "house-chimney-medical",
- "HAD" , "OQN"  , "house-chimney-medical",
- "SMR" , "DGF"  , "hospital"             ,
- "SMR" , "OQN"  , "hospital"             ,
- "PSY" , "DGF"  , "face-sad-tear"        ,
- "PSY" , "OQN"  , "face-sad-tear"        )
+ ~champ, ~statut, ~icon_name             ,
+ "mco" , "dgf"  , "bed-pulse"            ,
+ "mco" , "oqn"  , "bed-pulse"            ,
+ "had" , "dgf"  , "house-chimney-medical",
+ "had" , "oqn"  , "house-chimney-medical",
+ "smr" , "dgf"  , "hospital"             ,
+ "smr" , "oqn"  , "hospital"             ,
+ "psy" , "dgf"  , "face-sad-tear"        ,
+ "psy" , "oqn"  , "face-sad-tear"        )
 
-(items_loop <- items_setup %>% select(CHAMP, STATUT))
+(items_loop <- items_setup %>% select(champ, statut))
 
 subItems_setup <- tribble(
  ~text             , ~icon_name , ~tabName    ,

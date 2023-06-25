@@ -4,9 +4,7 @@ make_body <- function() {
 
   produce_dash_subItems <- function() {
 
-   produce_item <- function(CHAMP, STATUT) {
-    champ   <- str_to_lower(CHAMP)
-    statut  <- str_to_lower(STATUT)
+   produce_item <- function(champ, statut) {
     tabName <- str_c("dash_", champ, "_", statut)
     tabItem(tabName, DTOutput(tabName))
    }
@@ -15,21 +13,17 @@ make_body <- function() {
 
   produce_reset_subItems <- function() {
 
-   produce_item <- function(CHAMP, STATUT) {
-    champ   <- str_to_lower(CHAMP)
-    statut  <- str_to_lower(STATUT)
+   produce_item <- function(champ, statut) {
     tabName <- str_c("reset_", champ, "_", statut)
     tabItem(tabName,
-            actionButton(tabName, str_c("Reset ", CHAMP, " " , STATUT)))
+            actionButton(tabName, str_c("Reset ", champ, " " , statut)))
    }
    pmap(items_loop, produce_item)
   }
 
   produce_MAPscore_subItems <- function() {
 
-   produce_item <- function(CHAMP, STATUT) {
-    champ   <- str_to_lower(CHAMP)
-    statut  <- str_to_lower(STATUT)
+   produce_item <- function(champ, statut) {
     tabName <- str_c("MAPscore_", champ, "_", statut)
     tabItem(tabName,
             actionButton(tabName, NA))
@@ -39,9 +33,7 @@ make_body <- function() {
 
   produce_upload_subItems <- function(tabName, label) {
 
-   produce_item <- function(CHAMP, STATUT) {
-    champ   <- str_to_lower(CHAMP)
-    statut  <- str_to_lower(STATUT)
+   produce_item <- function(champ, statut) {
     tabName <- str_c(tabName, "_", champ, "_", statut)
     tabItem(tabName,
             fileInput(tabName,
