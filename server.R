@@ -27,7 +27,7 @@ js_black_header_callback <- paste(
 
  load_score_data <- function(champ, statut) {
   path <- score_path(champ, statut)
-  suffixe <- str_c(champ, "_", statut)
+  suffixe <- str_under(champ, statut)
   if(file.exists(score_path(champ, statut))) {
    print("file exists")
    score_data[[suffixe]] <<- read_csv(path)
@@ -36,7 +36,7 @@ js_black_header_callback <- paste(
 
  display_score <- function(champ, statut) {
 
-  suffixe <- str_c(champ, "_", statut)
+  suffixe <- str_under(champ, statut)
   output_var <- str_c("dash", champ, statut, sep = "_")
 
   data <- score_data[[suffixe]]
@@ -64,8 +64,8 @@ js_black_header_callback <- paste(
 
  event_upload_score_data <- function(champ, statut) {
 
-  suffixe <- str_c(champ, "_", statut)
-  id <- str_c("MAJscores_", suffixe)
+  suffixe <- str_under(champ, statut)
+  id <- str_under("MAJscores", suffixe)
   score_data_upload_fns[[suffixe]] <<- reactive({
     req(input[[id]])
     filestr <- input[[id]]
