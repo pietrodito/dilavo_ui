@@ -29,9 +29,9 @@ js_black_header_callback <- paste(
   path <- score_path(champ, statut)
   suffixe <- str_under(champ, statut)
   if(file.exists(score_path(champ, statut))) {
-   print("file exists")
    score_data[[suffixe]] <<- read_csv(path)
   }
+  print(score_data[[suffixe]])
  }
 
  display_score <- function(champ, statut) {
@@ -50,7 +50,7 @@ js_black_header_callback <- paste(
             list(className = 'dt-center',
                   targets = 0:(ncol(data) - 1))),
              dom = 't',
-             pageLength = Inf,
+             pageLength = -1,
              initComplete = JS(js_black_header_callback)))
   } else {
    renderDT(tibble(`Pour commencer...` =
@@ -64,12 +64,27 @@ js_black_header_callback <- paste(
 
  event_upload_score_data <- function(champ, statut) {
 
+  enhanced_colnames <- function(score_data) {
+
+
+   (
+    score_data
+    %>% colnames()
+    %>% str_remove_all("^Score.*' ")
+    %>% str_remove_all("[\\(|\\)|:|\\\"]")
+    %>% str_trim()
+    %>% str_replace("score ","score\n")
+   )
+  }
+
   suffixe <- str_under(champ, statut)
   id <- str_under("MAJscores", suffixe)
   score_data_upload_fns[[suffixe]] <<- reactive({
     req(input[[id]])
     filestr <- input[[id]]
     file <- read_csv2(filestr$datapath)
+    names(file) <- enhanced_colnames(file)
+    file %<>% select(-c(1, ncol(file)))
     write_csv(file, score_path(champ, statut))
     session$reload()
    })
@@ -87,5 +102,4 @@ js_black_header_callback <- paste(
  }
 
  pwalk(items_loop, apply_server_logic)
-
 }
