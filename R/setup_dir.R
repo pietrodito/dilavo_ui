@@ -1,4 +1,4 @@
-create_data_sub_dir <- function(dir) system(str_c("mkdir -p data/", dir))
+create_data_sub_dir <- function(dir) system(str_c("mkdir -p data/scores/", dir))
 make_dir_name <- function(champ, statut) str_under(champ, statut)
 (
  items_setup

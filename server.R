@@ -20,7 +20,7 @@ js_black_header_callback <- paste(
  }
 
  score_path <- function(champ, statut) {
-  str_c("data/", champ, "_", statut, "/scores.csv")
+  str_c("data/scores/", champ, "_", statut, "/scores.csv")
  }
 
  score_data <- list(NULL)
