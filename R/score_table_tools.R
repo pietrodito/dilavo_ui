@@ -1,7 +1,7 @@
 nettoie_nom_colonnes <- function(string) {
 
  replace_1.Q_by_synthese <- function(string) {
-  string %>% str_replace("1\\.Q\\)", "Synthèse")
+  ifelse(str_detect(string, "1\\.Q\\)"), "Synthèse", string)
  }
 
  remove_regex <- function(string, reg_exps) {
@@ -47,6 +47,7 @@ nettoie_nom_colonnes <- function(string) {
   string
   %>% replace_1.Q_by_synthese
   %>% remove_regex(reg_exps)
+  %>% str_replace("dentrée", "d'entrée")
  )
 }
 

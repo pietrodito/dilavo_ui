@@ -9,6 +9,7 @@ options(shiny.maxRequestSize=30*1024^2)
 
 ## Common tools --------------
 str_under <- function(...) str_c(..., sep = "_")
+source("R/score_table_tools.R")
 
 
 ## UI -------------------------

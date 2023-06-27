@@ -64,18 +64,7 @@ js_black_header_callback <- paste(
 
  event_upload_score_data <- function(champ, statut) {
 
-  enhanced_colnames <- function(score_data) {
-
-
-   (
-    score_data
-    %>% colnames()
-    %>% str_remove_all("^Score.*' ")
-    %>% str_remove_all("[\\(|\\)|:|\\\"]")
-    %>% str_trim()
-    %>% str_replace("score ","score\n")
-   )
-  }
+  remove_1st_and_last_column <- function(df) select(df, -c(1, ncol(df)))
 
   suffixe <- str_under(champ, statut)
   id <- str_under("MAJscores", suffixe)
@@ -83,8 +72,10 @@ js_black_header_callback <- paste(
     req(input[[id]])
     filestr <- input[[id]]
     file <- read_csv2(filestr$datapath)
-    names(file) <- enhanced_colnames(file)
-    file %<>% select(-c(1, ncol(file)))
+    file %<>% remove_1st_and_last_column()
+    col_names <- names(file)
+    names(file) <- if(champ == "psy") nettoie_nom_colonnes_psy(col_names)
+                   else               nettoie_nom_colonnes(col_names)
     write_csv(file, score_path(champ, statut))
     session$reload()
    })
