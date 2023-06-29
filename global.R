@@ -20,5 +20,5 @@ source("R/ui_dashboardSidebar.R")
 source("R/ui_dashboardBody.R")
 
 
-source("R/setup_dir.R")
 
+source("R/setup_dirs.R")

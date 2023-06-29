@@ -1,24 +1,17 @@
 server <- function(input, output, session) {
 
- reset_event <- function(champ, statut) {
+ setup_dirs()
 
-  input_var <- str_c("reset", champ, statut, sep = "_")
-  data_path <- str_c("data/", champ, "_", statut)
-
-  observeEvent(input[[input_var]], {
-   f <- list.files(data_path, include.dirs = T, full.names = T, recursive = T)
-   file.remove(f)
-   session$reload()
-  })
- }
-
- score_data <- list(NULL)
+ score_data <- NULL
+ score_column_codes <- NULL
 
  load_score_data <- function(champ, statut) {
   path <- score_path(champ, statut)
+  code_path <- score_column_codes_path(champ, statut)
   suffixe <- str_under(champ, statut)
   if(file.exists(score_path(champ, statut))) {
    score_data[[suffixe]] <<- read_csv(path)
+   score_column_codes[[suffixe]] <<- read_rds(code_path)
   }
  }
 
@@ -58,8 +51,6 @@ server <- function(input, output, session) {
   suffixe <- str_under(champ, statut)
   id <- str_under("MAJscores", suffixe)
 
-  ## TODO use get_column_codes and store them
-
   score_data_upload_fns[[suffixe]] <<- reactive({
     req(input[[id]])
     filestr <- input[[id]]
@@ -77,9 +68,41 @@ server <- function(input, output, session) {
   observeEvent((score_data_upload_fns[[suffixe]])(), {})
  }
 
+ tab_data_upload_fns  <- list(NULL)
+
+ event_upload_ovalide_data <- function(champ, statut) {
+
+  suffixe <- str_under(champ, statut)
+  id <- str_under("MAJtabs", suffixe)
+
+  tab_data_upload_fns[[suffixe]] <<- reactive({
+    req(input[[id]])
+    filestr <- input[[id]]
+    print(str_c("HERE:   --------\n", input[[id]]))
+    file.copy(filestr$datapath, str_c("data/", suffixe, "/ovalide/ovalide.zip"))
+    session$reload()
+   })
+
+  observeEvent((tab_data_upload_fns[[suffixe]])(), {})
+ }
+
+ reset_event <- function(champ, statut) {
+
+  input_var <- str_under("reset", champ, statut)
+  data_path <- str_c("data/", champ, "_", statut)
+
+  observeEvent(input[[input_var]], {
+   f <- list.files(data_path, include.dirs = T, full.names = T, recursive = T)
+   print(f %>% sort(decreasing = TRUE))
+   file.remove(f)
+   session$reload()
+  })
+ }
+
  server_logic <- list(reset_event,
                       load_score_data,
                       event_upload_score_data,
+                      event_upload_ovalide_data,
                       display_score)
 
  apply_server_logic <- function(champ, statut) {

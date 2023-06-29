@@ -72,11 +72,11 @@ get_column_codes <- function(string) {
 }
 
 score_path <- function(champ, statut) {
-  str_c("data/scores/", champ, "_", statut, "/scores.csv")
+  str_c("data/", champ, "_", statut, "/scores/scores.csv")
  }
 
 score_column_codes_path <- function(champ, statut) {
-  str_c("data/scores/", champ, "_", statut, "/column_codes.rds")
+  str_c("data/", champ, "_", statut, "/scores/column_codes.rds")
  }
 
 ## DEBUG & tests: ------
