@@ -1,12 +1,5 @@
 server <- function(input, output, session) {
 
-js_black_header_callback <- paste(
-   "function(settings, json) {",
-    "$(this.api().table().header()).css(
-                         {'background-color': '#ccc', 'color': '#000'});",
-    "}")
-
-
  reset_event <- function(champ, statut) {
 
   input_var <- str_c("reset", champ, statut, sep = "_")
@@ -19,10 +12,6 @@ js_black_header_callback <- paste(
   })
  }
 
- score_path <- function(champ, statut) {
-  str_c("data/scores/", champ, "_", statut, "/scores.csv")
- }
-
  score_data <- list(NULL)
 
  load_score_data <- function(champ, statut) {
@@ -31,7 +20,6 @@ js_black_header_callback <- paste(
   if(file.exists(score_path(champ, statut))) {
    score_data[[suffixe]] <<- read_csv(path)
   }
-  print(score_data[[suffixe]])
  }
 
  display_score <- function(champ, statut) {
@@ -40,6 +28,8 @@ js_black_header_callback <- paste(
   output_var <- str_c("dash", champ, statut, sep = "_")
 
   data <- score_data[[suffixe]]
+
+ define_js_callbacks("www/black_header_callback.js")
 
   output[[output_var]] <- if(! is.null(data)) {
    renderDT(data,
@@ -51,7 +41,7 @@ js_black_header_callback <- paste(
                   targets = 0:(ncol(data) - 1))),
              dom = 't',
              pageLength = -1,
-             initComplete = JS(js_black_header_callback)))
+             initComplete = JS(black_header_callback)))
   } else {
    renderDT(tibble(`Pour commencer...` =
                     "Veuillez téléverser un fichier avec les scores"),
@@ -60,14 +50,16 @@ js_black_header_callback <- paste(
    }
   }
 
- score_data_upload_fns <- list(NULL)
+ score_data_upload_fns  <- list(NULL)
 
  event_upload_score_data <- function(champ, statut) {
 
   remove_1st_and_last_column <- function(df) select(df, -c(1, ncol(df)))
-
   suffixe <- str_under(champ, statut)
   id <- str_under("MAJscores", suffixe)
+
+  ## TODO use get_column_codes and store them
+
   score_data_upload_fns[[suffixe]] <<- reactive({
     req(input[[id]])
     filestr <- input[[id]]
@@ -76,6 +68,8 @@ js_black_header_callback <- paste(
     col_names <- names(file)
     names(file) <- if(champ == "psy") nettoie_nom_colonnes_psy(col_names)
                    else               nettoie_nom_colonnes(col_names)
+    write_rds(get_column_codes(col_names),
+              score_column_codes_path(champ, statut))
     write_csv(file, score_path(champ, statut))
     session$reload()
    })
