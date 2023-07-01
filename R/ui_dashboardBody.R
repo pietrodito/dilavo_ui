@@ -31,8 +31,10 @@ make_body <- function() {
 
      tabItem(tabName,
              actionButton(str_under(tabName, "save"), "Sauvegarder"),
-             actionButton(str_under(tabName, "choose_mapping_file"),
-                          "Choisir tableaux"),
+             shinyFilesButton(str_under(tabName, "choose_mapping_files"),
+                              label = "Séléction des tableaux",
+                              title = "Merci de choisir vos fichiers",
+                              multiple = TRUE),
              div(style = 'overflow-x: scroll',
                  DTOutput(tabName)))
    }

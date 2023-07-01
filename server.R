@@ -4,46 +4,37 @@ server <- function(input, output, session) {
 
  setup_dirs()
 
- score_data <- NULL
- score_column_codes <- NULL
- mapping <- NULL
+ score_data        <- NULL
+ column_names      <- NULL
+ mapping_data      <- NULL
  mapping_edit_data <- NULL
  load_score_data <- function(champ, statut) {
 
   score_path <- score_path(champ, statut)
-  code_path <- score_column_codes_path(champ, statut)
   mapping_path <- mapping_path(champ, statut)
 
   suffixe <- str_under(champ, statut)
   if(file.exists(score_path)) {
    score_data[[suffixe]] <<- read_csv(score_path)
-   score_column_codes[[suffixe]] <<- read_rds(code_path)
-  }
-  if(file.exists(mapping_path)) {
-   mapping[[suffixe]] <<- read_csv(mapping_path)
+   column_names <- tibble(`Nom de colonne` = names(score_data[[suffixe]]))
   }
 
-  code_data         <- NULL
-  mapping_data      <- NULL
-  code_file         <- str_c("data/", suffixe, "/scores/column_codes.rds")
-  mapping_file      <- str_c("data/", suffixe, "/scores/code_mapping.rds")
-  if(file.exists(code_file   )) code_data    <- read_rds(code_file   )
-  if(file.exists(mapping_file)) mapping_data <- read_rds(mapping_data)
-   ## TODO map_data = left_join(code_data, mapping_data)
+  mapping_file <- str_c("data/", suffixe, "/scores/code_mapping.rds")
+  if(file.exists(mapping_file)) mapping_data <- read_rds(mapping_file)
 
-  if(! is.null(code_data)) {
+  if(! is.null(column_names)) {
    if(! is.null(mapping_data)) {
-    ## Il faut s'assurer que mapping_data a bien une ligne par
-    ## code de code_data ??
-    ## En fait la jointure fait déjà ce travail !? Non ?!
-    map_data <- left_join(tibble(column_code = code_data),
-                          mapping_data)
+   ## Il faut s'assurer que mapping_data a bien une ligne par
+   ## code de code_data ??
+   ## En fait la jointure fait déjà ce travail !? Non ?!
+   ## TODO map_data = left_join(column_names, mapping_data)
+    map_data <- left_join(column_names, mapping_data)
    } else {
     ((
      1:(possible_mapping_number)
      %>% str_c("map_", ., " = NA")
      %>% str_c(collapse = ", ")
-     %>% str_c("add_column(tibble(column_code = code_data), ",
+     %>% str_c("add_column(column_names, ",
                ., ")")
     ) -> create_empty_map_data)
     mapping_edit_data[[suffixe]] <<- eval(parse(text = create_empty_map_data))
@@ -53,7 +44,7 @@ server <- function(input, output, session) {
 
  ## TODO load OVALIDE tabs as in memory-SQL database
 
- score_data_upload_fns  <- list(NULL)
+ score_data_upload_fns   <- list(NULL)
  event_upload_score_data <- function(champ, statut) {
 
   remove_1st_and_last_column <- function(df) select(df, -c(1, ncol(df)))
@@ -77,7 +68,7 @@ server <- function(input, output, session) {
   observeEvent((score_data_upload_fns[[suffixe]])(), {})
  }
 
- tab_data_upload_fns  <- list(NULL)
+ tab_data_upload_fns       <- list(NULL)
  event_upload_ovalide_data <- function(champ, statut) {
 
   suffixe <- str_under(champ, statut)
