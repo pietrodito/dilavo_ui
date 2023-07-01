@@ -28,8 +28,13 @@ make_body <- function() {
 
    produce_item <- function(champ, statut) {
     tabName <- str_under("MAPscore", champ, statut)
-    tabItem(tabName,
-            actionButton(tabName, NA))
+
+     tabItem(tabName,
+             actionButton(str_under(tabName, "save"), "Sauvegarder"),
+             actionButton(str_under(tabName, "choose_mapping_file"),
+                          "Choisir tableaux"),
+             div(style = 'overflow-x: scroll',
+                 DTOutput(tabName)))
    }
    pmap(items_loop, produce_item)
   }

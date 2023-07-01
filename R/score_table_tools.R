@@ -77,7 +77,11 @@ score_path <- function(champ, statut) {
 
 score_column_codes_path <- function(champ, statut) {
   str_c("data/", champ, "_", statut, "/scores/column_codes.rds")
- }
+}
+
+mapping_path <- function(champ, statut) {
+  str_c("data/", champ, "_", statut, "/scores/mapping.csv")
+}
 
 ## DEBUG & tests: ------
 
