@@ -1,6 +1,6 @@
-possible_mapping_number <- 20
-
 server <- function(input, output, session) {
+
+ log_new_session_box()
 
  setup_dirs()
 
@@ -121,7 +121,6 @@ server <- function(input, output, session) {
   output_var <- str_under("MAPscore", suffixe)
 
   data <- mapping_edit_data[[suffixe]]
-  print(str_c("Display mapping: ", data))
   output[[output_var]] <- if(is.null(data)) {
    no_data_renderDT()
    } else {
@@ -150,12 +149,30 @@ server <- function(input, output, session) {
   })
  }
 
+ mapping_file_chooser <- function(champ, statut) {
+  tabName <- str_under("MAPscore", champ, statut)
+  shinyFileChoose(input,
+                  str_under(tabName, "choose_mapping_files"),
+                  root = ".")
+ }
+
+ print_choosen_files <- function(champ, statut) {
+  observe({
+   tabName <- str_under("MAPscore", champ, statut, "choose_mapping_files")
+   print("--------------------------------------------------")
+   print(input[[tabName]])
+  })
+
+ }
+
  server_logic <- list(reset_event,
                       load_score_data,
                       event_upload_score_data,
                       event_upload_ovalide_data,
                       display_score,
-                      display_mapping)
+                      display_mapping,
+                      print_choosen_files,
+                      mapping_file_chooser)
 
  apply_server_logic <- function(champ, statut) {
   walk(server_logic, ~ do.call(., list(champ, statut)))

@@ -1,4 +1,7 @@
 setup_dirs <- function() {
+
+ system("mkdir -p logs/")
+
  data_sub_dirs <- c("scores",
                     "ovalide")
 
