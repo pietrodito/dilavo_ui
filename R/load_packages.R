@@ -1,0 +1,6 @@
+library(shiny)
+library(tidyverse)
+library(magrittr)
+library(shinydashboard)
+library(shinyFiles)
+library(DT)

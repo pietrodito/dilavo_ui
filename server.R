@@ -1,4 +1,4 @@
-server <- function(input, output, session) {
+soerver <- function(input, output, session) {
 
  log_new_session_box()
 
@@ -80,6 +80,7 @@ server <- function(input, output, session) {
     file.copy(filestr$datapath,
               str_c("data/", suffixe, "/ovalide/ovalide.zip"),
               overwrite = TRUE)
+    unzip_ovalide_file(champ, statut)
     session$reload()
    })
 
@@ -153,7 +154,9 @@ server <- function(input, output, session) {
   tabName <- str_under("MAPscore", champ, statut)
   shinyFileChoose(input,
                   str_under(tabName, "choose_mapping_files"),
-                  root = ".")
+                  root = c(root = str_c("./data/",
+                                        champ, "_", statut,
+                                        "/ovalide/tabs/")))
  }
 
  print_choosen_files <- function(champ, statut) {

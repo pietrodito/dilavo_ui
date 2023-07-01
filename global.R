@@ -11,6 +11,7 @@ source("R/log_helper.R")
 str_under <- function(...) str_c(..., sep = "_")
 source("R/score_table_tools.R")
 source("R/parse_js_file.R")
+source("R/unzip_ovalide_file.R")
 
 
 ## UI -------------------------
