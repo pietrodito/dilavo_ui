@@ -107,12 +107,12 @@ soerver <- function(input, output, session) {
             rownames = FALSE,
             selection = list(mode = "single",
                              target = "cell"),
-            options = list(columnDefs = list(
-            list(className = 'dt-center',
-                  targets = 0:(ncol(data) - 1))),
-             dom = 't',
-             pageLength = -1,
-             initComplete = JS(black_header_callback)))
+            options = list(columnDefs =
+                            list(list(className = 'dt-center',
+                                      targets = 0:(ncol(data) - 1))),
+                           dom = 't',
+                           pageLength = -1,
+                           initComplete = JS(black_header_callback)))
   }
  }
 
